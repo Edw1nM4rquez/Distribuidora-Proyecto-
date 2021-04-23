@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="../templates/dashboard.xhtml">
+
+    <ui:define name="metadata">
+
+    </ui:define>
+
+    <ui:define name="title">
+        Catálogo Productos
+    </ui:define>
+
+
+    <ui:define name="menu">
+
+        <ul class="sidebar-menu" data-widget="tree">
+            <li class="header">
+                CATIGORÍAS
+            </li>
+
+            <c:forEach items="${categoriaBean.categoriaList}" var="categoria">
+
+                <li>
+                    <p:commandLink action="#{categoriaBean.verStockCategoria(categoria)}">
+                        <i class="fa fa-cube"></i>
+                        <span>#{categoria.nombre}</span>
+                    </p:commandLink>
+                </li>
+
+            </c:forEach>
+
+            <li class="header">
+                BODEGAS
+            </li>
+
+            <c:forEach items="${bodegaBean.bodegaList}" var="bodega">
+
+                <li>
+                    <p:commandLink action="#{bodegaBean.bodegaProductos(bodega)}">
+                        <i class="fa fa-building"></i>
+                        <span>#{bodega.nombre}</span>
+                    </p:commandLink>
+                </li>
+
+            </c:forEach>
+
+        </ul>
+
+    </ui:define>
+    <ui:define name="body">
+
+        <p:panel  header="Lista de Productos">
+            <h:form id="formClientes" header="Lista de Productos">
+                <p:dataTable value="#{productoBean.productoList}" var="producto" paginator="true" paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rowsPerPageTemplate="10,15,20" rows="10" rowKey="#{producto.codigo}"
+                             emptyMessage="No existen productos que coincidan con su criterio de busqueda">
+
+                    <p:column filterBy="#{producto.codigo}" sortBy="#{producto.codigo}" headerText="Codigo"   filterMatchMode="contains" priority="1">
+                        <h:outputText value="#{producto.codigo}"/>
+                    </p:column>
+
+                    <p:column filterBy="#{producto.nombre}" sortBy="#{producto.nombre}" headerText="Nombre"   filterMatchMode="contains" priority="2">
+                        <h:outputText value="#{producto.nombre}"/>
+                    </p:column>
+
+                    <p:column filterBy="#{producto.categoria.nombre}" sortBy="#{producto.categoria.nombre}" headerText="Categoria"   filterMatchMode="contains" priority="3">
+                        <h:outputText value="#{producto.categoria.nombre}"/>
+                    </p:column>
+
+                    <p:column  headerText="Precio">
+                        <h:outputText value="$#{producto.precio}"/>
+                    </p:column>
+
+                    <p:column  headerText="Iva">
+                        <h:outputText value="#{producto.iva}%"/>
+                    </p:column>
+
+                    <p:column headerText="Estado">
+                            <span class="badge bg-green"><h:outputText rendered="#{producto.estado=='A'}" value="Disponible"/></span>
+                            <span class="badge bg-red"><h:outputText  rendered="#{producto.estado=='E'}" value="Discontinuado"/></span>
+                    </p:column>
+
+                    <p:column headerText="Imagen">
+                        <p:commandButton value="Ver" icon="fa fa-eye" actionListener="#{productoBean.view(producto)}" ajax="false" styleClass="btn-block btn-info" />
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>
+
+        </p:panel>
+    </ui:define>
+
+    <ui:define name="footer">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> 1.0
+        </div>
+        <strong>Copyright 2020 <a href="">Tucto S.A.</a>.</strong> Todos los derechos reservado.
+    </ui:define>
+
+</ui:composition>
